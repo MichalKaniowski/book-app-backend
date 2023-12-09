@@ -1,0 +1,24 @@
+const mongoose = require("mongoose");
+
+const bookSchema = mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    body: { type: String, required: true },
+    age: { type: Number, required: true },
+    category: { type: String, required: true },
+    discussionTopics: [{ type: String, required: false }],
+    estimatedReadingTime: { type: Number, required: true },
+    isPremium: { type: Boolean, required: true },
+    keywords: [{ type: String, required: true }],
+    questions: [{ type: String, required: false }],
+    ratings: [{ type: String, required: true }],
+    author: { type: String, required: false },
+    illustrator: { type: String, required: false },
+    translator: { type: String, required: false },
+  },
+  { timestamps: false }
+);
+
+const Book = mongoose.model("Book", bookSchema);
+module.exports = { Book, bookSchema };
