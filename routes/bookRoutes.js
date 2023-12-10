@@ -12,7 +12,7 @@ const {
 router.get("/getBooks", getBooks);
 router.get("/getBookRecommendations", getBookRecommendations);
 router.get("/getFilteredBooksByCategory", getFilteredBooksByCategory);
-router.get("/getBooksFilteredByName", getBooksFilteredByName);
+router.get("/getBooksFilteredByName/:name", getBooksFilteredByName);
 router.get("/getShelfBooks", getShelfBooks);
 
 router.post("/addBookToShelfBooks", addBookToShelfBooks);

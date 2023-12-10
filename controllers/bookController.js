@@ -45,16 +45,17 @@ async function getFilteredBooksByCategory(req, res) {
 
 async function getBooksFilteredByName(req, res) {
   try {
-    const { searchText } = req.body;
+    const name = req.params.name;
 
     const books = await Book.find();
 
     const filteredBooks = books.filter((book) =>
-      book.title.toLowerCase().includes(searchText.trim().toLowerCase())
+      book.title.toLowerCase().includes(name.trim().toLowerCase())
     );
 
     res.json(filteredBooks);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: "Something went wrong" });
   }
 }
