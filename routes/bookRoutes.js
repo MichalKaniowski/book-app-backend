@@ -11,9 +11,9 @@ const {
 
 router.get("/getBooks", getBooks);
 router.get("/getBookRecommendations", getBookRecommendations);
-router.get("/getFilteredBooksByCategory", getFilteredBooksByCategory);
+router.get("/getFilteredBooksByCategory/:category", getFilteredBooksByCategory);
 router.get("/getBooksFilteredByName/:name", getBooksFilteredByName);
-router.get("/getShelfBooks", getShelfBooks);
+router.get("/getShelfBooks/:firebaseId", getShelfBooks);
 
 router.post("/addBookToShelfBooks", addBookToShelfBooks);
 

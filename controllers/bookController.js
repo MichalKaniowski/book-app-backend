@@ -24,7 +24,7 @@ async function getBookRecommendations(req, res) {
 
 async function getFilteredBooksByCategory(req, res) {
   try {
-    const { filterCriteria } = req.body;
+    const filterCriteria = req.params.filterCriteria;
     let books = await Book.find();
 
     if (
@@ -62,7 +62,7 @@ async function getBooksFilteredByName(req, res) {
 
 async function getShelfBooks(req, res) {
   try {
-    const { userFirebaseId } = req.body;
+    const userFirebaseId = req.params.firebaseId;
 
     const users = await User.find();
     const user = users.find((user) => user.firebaseId === userFirebaseId);
