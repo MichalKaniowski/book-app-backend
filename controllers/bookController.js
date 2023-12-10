@@ -24,17 +24,13 @@ async function getBookRecommendations(req, res) {
 
 async function getFilteredBooksByCategory(req, res) {
   try {
-    const filterCriteria = req.params.filterCriteria;
+    const category = req.params.category;
     let books = await Book.find();
 
-    if (
-      filterCriteria === "3+" ||
-      filterCriteria === "5+" ||
-      filterCriteria === "8+"
-    ) {
-      books = books.filter((book) => book.age >= Number(filterCriteria[0]));
+    if (category === "3+" || category === "5+" || category === "8+") {
+      books = books.filter((book) => book.age >= Number(category[0]));
     } else {
-      books = books.filter((book) => book.category === filterCriteria);
+      books = books.filter((book) => book.category === category);
     }
 
     res.json(books);
@@ -63,6 +59,8 @@ async function getBooksFilteredByName(req, res) {
 async function getShelfBooks(req, res) {
   try {
     const userFirebaseId = req.params.firebaseId;
+
+    console.log(userFirebaseId);
 
     const users = await User.find();
     const user = users.find((user) => user.firebaseId === userFirebaseId);
