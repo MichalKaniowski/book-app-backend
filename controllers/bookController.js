@@ -60,8 +60,6 @@ async function getShelfBooks(req, res) {
   try {
     const userFirebaseId = req.params.firebaseId;
 
-    console.log(userFirebaseId);
-
     const users = await User.find();
     const user = users.find((user) => user.firebaseId === userFirebaseId);
 
@@ -78,24 +76,23 @@ async function getShelfBooks(req, res) {
 async function addBookToShelfBooks(req, res) {
   try {
     const { userFirebaseId, book } = req.body;
-
     const user = await User.findOne({ firebaseId: userFirebaseId });
 
-    const bookInUserDocument = user?.readBooks.find(
-      (readBook) => readBook._id === book._id
+    const bookInUserDocument = user.readBooks.find(
+      (readBook) => readBook._id.toString() === book._id.toString()
     );
 
     if (!bookInUserDocument) {
       const newReadBooks = [...user?.readBooks, book];
 
-      // not using updateOne, because this doesn't return new user
+      // not using updateOne, because it doesn't return new user
       const updatedUser = await User.findByIdAndUpdate(
         user._id,
         { readBooks: newReadBooks },
         { returnDocument: "after" }
       );
 
-      res.json(updatedUser);
+      return res.json(updatedUser);
     }
 
     res.json(bookInUserDocument);
