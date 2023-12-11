@@ -102,6 +102,34 @@ async function addBookToShelfBooks(req, res) {
   }
 }
 
+async function addBookToFinishedBooks(req, res) {
+  try {
+    const { userFirebaseId, bookId } = req.body;
+
+    const user = await User.findOne({ firebaseId: userFirebaseId });
+
+    const bookInUserDocument = user.finishedBooks.find(
+      (book) => book._id.toString() === bookId
+    );
+
+    if (!bookInUserDocument) {
+      const newFinishedBooks = [...user.finishedBooks, bookId];
+      const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        { finishedBooks: newFinishedBooks },
+        { returnDocument: "after" }
+      );
+
+      return res.json(updatedUser);
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "Something went wrong" });
+  }
+}
+
 module.exports = {
   getBooks,
   getBookRecommendations,
@@ -109,4 +137,5 @@ module.exports = {
   getBooksFilteredByName,
   getShelfBooks,
   addBookToShelfBooks,
+  addBookToFinishedBooks,
 };
