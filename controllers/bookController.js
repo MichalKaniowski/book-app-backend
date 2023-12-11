@@ -63,9 +63,9 @@ async function getShelfBooks(req, res) {
     const users = await User.find();
     const user = users.find((user) => user.firebaseId === userFirebaseId);
 
-    const readBooks = user?.readBooks ?? [];
+    const shelfBooks = user?.shelfBooks ?? [];
 
-    res.json(readBooks);
+    res.json(shelfBooks);
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: "Something went wrong" });
@@ -78,17 +78,17 @@ async function addBookToShelfBooks(req, res) {
     const { userFirebaseId, book } = req.body;
     const user = await User.findOne({ firebaseId: userFirebaseId });
 
-    const bookInUserDocument = user.readBooks.find(
+    const bookInUserDocument = user.shelfBooks.find(
       (readBook) => readBook._id.toString() === book._id.toString()
     );
 
     if (!bookInUserDocument) {
-      const newReadBooks = [...user?.readBooks, book];
+      const newShelfBooks = [...user?.shelfBooks, book];
 
       // not using updateOne, because it doesn't return new user
       const updatedUser = await User.findByIdAndUpdate(
         user._id,
-        { readBooks: newReadBooks },
+        { shelfBooks: newShelfBooks },
         { returnDocument: "after" }
       );
 
