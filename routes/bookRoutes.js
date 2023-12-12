@@ -8,6 +8,7 @@ const {
   getShelfBooks,
   addBookToShelfBooks,
   addBookToFinishedBooks,
+  addBookRating,
 } = require("../controllers/bookController");
 
 router.get("/getBooks", getBooks);
@@ -18,5 +19,6 @@ router.get("/getShelfBooks/:firebaseId", getShelfBooks);
 
 router.post("/addBookToShelfBooks", addBookToShelfBooks);
 router.post("/addBookToFinishedBooks", addBookToFinishedBooks);
+router.post("/addBookRating", addBookRating);
 
 module.exports = router;

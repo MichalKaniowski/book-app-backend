@@ -1,4 +1,5 @@
 const { Book } = require("../models/Book");
+const { Rating } = require("../models/Rating");
 const { User } = require("../models/User");
 
 // get requests
@@ -130,6 +131,41 @@ async function addBookToFinishedBooks(req, res) {
   }
 }
 
+async function addBookRating(req, res) {
+  try {
+    const { bookId, userId, number } = req.body;
+
+    await Rating.create({ bookId, userId, number });
+
+    const ratings = await Rating.find();
+
+    const bookRatings = ratings.filter(
+      (rating) => rating.bookId.toString() === bookId
+    );
+
+    const bookRatingsSum =
+      bookRatings.length === 0
+        ? 0
+        : bookRatings.reduce((accumulator, currentObject) => {
+            return accumulator + currentObject.number;
+          }, 0);
+
+    const bookRatingsMean = (bookRatingsSum / bookRatings.length).toFixed(1);
+
+    await Book.updateOne(
+      { _id: bookId },
+      {
+        rating: bookRatingsMean,
+      }
+    );
+
+    res.json(bookRatingsMean);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "Something went wrong" });
+  }
+}
+
 module.exports = {
   getBooks,
   getBookRecommendations,
@@ -138,4 +174,5 @@ module.exports = {
   getShelfBooks,
   addBookToShelfBooks,
   addBookToFinishedBooks,
+  addBookRating,
 };

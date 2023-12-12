@@ -12,7 +12,7 @@ const bookSchema = mongoose.Schema(
     isPremium: { type: Boolean, required: true },
     keywords: [{ type: String, required: true }],
     questions: [{ type: String, required: false }],
-    ratings: [{ type: String, required: true }],
+    rating: { type: Number, default: 0 },
     author: { type: String, required: false },
     illustrator: { type: String, required: false },
     translator: { type: String, required: false },
