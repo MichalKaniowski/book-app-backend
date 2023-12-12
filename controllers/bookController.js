@@ -65,7 +65,7 @@ async function getShelfBooks(req, res) {
 
     const shelfBooks = user?.shelfBooks ?? [];
 
-    res.json(shelfBooks);
+    res.json({ books: shelfBooks, user: user });
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: "Something went wrong" });
