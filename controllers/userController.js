@@ -2,7 +2,7 @@ const { User } = require("../models/User");
 
 async function getUser(req, res) {
   try {
-    const { firebaseId } = req.body;
+    const firebaseId = req.params.firebaseId;
     const user = await User.findOne({ firebaseId });
 
     res.json(user);
