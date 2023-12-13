@@ -133,9 +133,9 @@ async function addBookToFinishedBooks(req, res) {
 
 async function addBookRating(req, res) {
   try {
-    const { bookId, userId, number } = req.body;
+    const { bookId, userFirebaseId, number } = req.body;
 
-    const user = await User.findById(userId);
+    const user = await User.findOne({ firebaseId: userFirebaseId });
 
     const bookInRatedBooks = user.ratedBooks.find(
       (book) => book._id.toString() === bookId
@@ -145,9 +145,9 @@ async function addBookRating(req, res) {
       return res.json({ message: "Rating has already been set" });
     }
 
-    await Rating.create({ bookId, userId, number });
+    await Rating.create({ bookId, userId: user._id, number });
     await User.updateOne(
-      { _id: userId },
+      { _id: user._id },
       { ratedBooks: [...user.ratedBooks, bookId] }
     );
 
