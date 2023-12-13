@@ -1,5 +1,16 @@
 const { User } = require("../models/User");
 
+async function getUser(req, res) {
+  try {
+    const { firebaseId } = req.body;
+    const user = await User.findOne({ firebaseId });
+
+    res.json(user);
+  } catch (error) {
+    res.status(400).json({ message: "Something went wrong" });
+  }
+}
+
 async function createUser(req, res) {
   try {
     const { email, username, firebaseId } = req.body;
@@ -18,4 +29,4 @@ async function createUser(req, res) {
   }
 }
 
-module.exports = { createUser };
+module.exports = { getUser, createUser };
