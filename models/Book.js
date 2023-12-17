@@ -16,6 +16,8 @@ const bookSchema = mongoose.Schema(
     author: { type: String, required: false },
     illustrator: { type: String, required: false },
     translator: { type: String, required: false },
+    imageUrl: {type: String, required: true},
+    backgroundColor: [{type: String, required: true}]
   },
   { timestamps: false }
 );
