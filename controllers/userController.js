@@ -29,4 +29,22 @@ async function createUser(req, res) {
   }
 }
 
-module.exports = { getUser, createUser };
+async function addSpentTime(req, res) {
+  try {
+    const {userFirebaseId, spentTimeInSeconds} = req.body;
+  
+    const user = await User.findOne({firebaseId: userFirebaseId}); 
+    
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      { spentTime: user.spentTime + spentTimeInSeconds },
+      { returnDocument: "after" }
+    );
+
+    res.json(updatedUser)
+  } catch (error) {
+    res.status(400).json({message: "Something went wrong"})
+  }
+}
+
+module.exports = { getUser, createUser, addSpentTime };
