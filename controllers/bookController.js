@@ -29,7 +29,7 @@ async function getFilteredBooksByCategory(req, res) {
     let books = await Book.find();
 
     if (category === "3+" || category === "5+" || category === "8+") {
-      books = books.filter((book) => book.age >= Number(category[0]));
+      books = books.filter((book) => book.age <= Number(category[0]));
     } else {
       books = books.filter((book) => book.category === category);
     }
