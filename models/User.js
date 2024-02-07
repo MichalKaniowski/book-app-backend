@@ -11,6 +11,7 @@ const userSchema = mongoose.Schema(
     ],
     ratedBooks: [{ type: mongoose.Types.ObjectId, ref: "Book", default: [] }],
     firebaseId: { type: String, required: true },
+    spentTime: {type: Number, default: 0}
   },
   { timestamps: true }
 );
