@@ -142,7 +142,20 @@ async function addBookRating(req, res) {
     );
 
     if (bookInRatedBooks) {
-      return res.json({ message: "Rating has already been set" });
+      const ratedBooksWithoutTheBook = user.ratedBooks.filter(
+        (book) => book._id !== bookId
+      );
+
+      await User.updateOne(
+        { firebaseId: userFirebaseId },
+        {
+          ratedBooks: [
+            ...ratedBooksWithoutTheBook,
+            { ...bookInRatedBooks, number },
+          ],
+        }
+      );
+      return res.json({ message: "Rating has been updated" });
     }
 
     await Rating.create({ bookId, userId: user._id, number });
