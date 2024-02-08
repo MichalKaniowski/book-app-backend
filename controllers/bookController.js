@@ -106,7 +106,6 @@ async function addBookToShelfBooks(req, res) {
 async function addBookToFinishedBooks(req, res) {
   try {
     const { userFirebaseId, bookId } = req.body;
-
     const user = await User.findOne({ firebaseId: userFirebaseId });
 
     const bookInUserDocument = user.finishedBooks.find(
@@ -131,30 +130,56 @@ async function addBookToFinishedBooks(req, res) {
   }
 }
 
+async function updateBookMeanRating(bookId) {
+  const ratings = await Rating.find();
+  const bookRatings = ratings.filter(
+    (rating) => rating.bookId.toString() === bookId
+  );
+  const bookRatingsSum =
+    bookRatings.length === 0
+      ? 0
+      : bookRatings.reduce((accumulator, currentObject) => {
+          return accumulator + currentObject.number;
+        }, 0);
+  const bookRatingsMean = (bookRatingsSum / bookRatings.length).toFixed(1);
+
+  await Book.updateOne(
+    { _id: bookId },
+    {
+      rating: bookRatingsMean,
+    }
+  );
+}
+
 async function addBookRating(req, res) {
   try {
-    const { bookId, userFirebaseId, number } = req.body;
+    const { bookId, userFirebaseId, number: receivedNumber } = req.body;
+    const number = Number(receivedNumber);
 
-    const user = await User.findOne({ firebaseId: userFirebaseId });
+    const user = await User.findOne({ firebaseId: userFirebaseId }).populate(
+      "ratedBooks"
+    );
+
+    if (!user) {
+      return res.status(401).json({ message: "Unathorized" });
+    }
 
     const bookInRatedBooks = user.ratedBooks.find(
       (book) => book._id.toString() === bookId
     );
 
     if (bookInRatedBooks) {
-      const ratedBooksWithoutTheBook = user.ratedBooks.filter(
-        (book) => book._id !== bookId
+      const rating = await Rating.findOne({
+        bookId: bookInRatedBooks.id,
+        userId: user.id,
+      });
+      await Rating.findByIdAndUpdate(
+        rating._id,
+        { number: number },
+        { returnDocument: "after" }
       );
+      await updateBookMeanRating(bookId);
 
-      await User.updateOne(
-        { firebaseId: userFirebaseId },
-        {
-          ratedBooks: [
-            ...ratedBooksWithoutTheBook,
-            { ...bookInRatedBooks, number },
-          ],
-        }
-      );
       return res.json({ message: "Rating has been updated" });
     }
 
@@ -164,29 +189,9 @@ async function addBookRating(req, res) {
       { ratedBooks: [...user.ratedBooks, bookId] }
     );
 
-    const ratings = await Rating.find();
+    await updateBookMeanRating(bookId);
 
-    const bookRatings = ratings.filter(
-      (rating) => rating.bookId.toString() === bookId
-    );
-
-    const bookRatingsSum =
-      bookRatings.length === 0
-        ? 0
-        : bookRatings.reduce((accumulator, currentObject) => {
-            return accumulator + currentObject.number;
-          }, 0);
-
-    const bookRatingsMean = (bookRatingsSum / bookRatings.length).toFixed(1);
-
-    await Book.updateOne(
-      { _id: bookId },
-      {
-        rating: bookRatingsMean,
-      }
-    );
-
-    res.json(bookRatingsMean);
+    res.json({ message: "Rating has been added" });
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: "Something went wrong" });
