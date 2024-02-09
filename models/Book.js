@@ -6,7 +6,7 @@ const bookSchema = mongoose.Schema(
     description: { type: String, required: true },
     body: { type: String, required: true },
     age: { type: Number, required: true },
-    category: { type: String, required: true },
+    categories: [{ type: String, required: true }],
     discussionTopics: [{ type: String, required: false }],
     estimatedReadingTime: { type: Number, required: true },
     isPremium: { type: Boolean, required: true },
@@ -16,8 +16,8 @@ const bookSchema = mongoose.Schema(
     author: { type: String, required: false },
     illustrator: { type: String, required: false },
     translator: { type: String, required: false },
-    imageUrl: {type: String, required: true},
-    backgroundColor: [{type: String, required: true}]
+    imageUrl: { type: String, required: true },
+    backgroundColor: [{ type: String, required: true }],
   },
   { timestamps: false }
 );
