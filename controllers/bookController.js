@@ -16,7 +16,7 @@ async function getBooks(req, res) {
 async function getBookRecommendations(req, res) {
   try {
     const books = await Book.find();
-    res.json(books);
+    res.json(books.slice(0, 10));
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: "Something went wrong" });
