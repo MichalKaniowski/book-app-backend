@@ -18,6 +18,7 @@ const bookSchema = mongoose.Schema(
     translator: { type: String, required: false },
     imageUrl: { type: String, required: true },
     backgroundColor: [{ type: String, required: true }],
+    color: { type: String, required: true },
   },
   { timestamps: false }
 );
